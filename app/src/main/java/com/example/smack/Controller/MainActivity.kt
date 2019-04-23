@@ -65,6 +65,8 @@ class MainActivity : AppCompatActivity() {
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         setupAdapters()
+        LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver,
+            IntentFilter(BROADCAST_USER_DATA_CHANGE))
 
         channel_list.setOnItemClickListener { _, _, position, _ ->
             selectedChannel =   MessageService.channels[position]
@@ -76,12 +78,6 @@ class MainActivity : AppCompatActivity() {
             AuthService.findUserbyEmail(this) {}
         }
 
-    }
-
-    override fun onResume() {
-        LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver,
-            IntentFilter(BROADCAST_USER_DATA_CHANGE))
-        super.onResume()
     }
 
     override fun onDestroy() {
@@ -147,6 +143,7 @@ class MainActivity : AppCompatActivity() {
             userImageNavHeader.setImageResource(R.drawable.profiledefault)
             userImageNavHeader.setBackgroundColor(Color.TRANSPARENT)
             loginBtnNavHeader.text = "Login"
+            mainChannelName.text = "Please log in"
         } else {
             val loginIntent = Intent(this, LoginActivity::class.java)
             startActivity(loginIntent)
@@ -202,7 +199,7 @@ class MainActivity : AppCompatActivity() {
                     val id = args[6] as String
                     val timeStamp = args[7] as String
 
-                    val newMessage = Message(msgBody, channelId, userName, userAvatar, userAvatarColor, id, timeStamp)
+                    val newMessage = Message(msgBody, userName, channelId, userAvatar, userAvatarColor, id, timeStamp)
                     MessageService.messages.add(newMessage)
                     messageAdapter.notifyDataSetChanged()
                     messageListView.smoothScrollToPosition(messageAdapter.itemCount - 1)
