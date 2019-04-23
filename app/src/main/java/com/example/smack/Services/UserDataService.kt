@@ -12,7 +12,7 @@ object UserDataService {
     var email = ""
     var name = ""
 
-    fun loggout() {
+    fun logout() {
         id = ""
         avatarColor = ""
         avatarName = ""
@@ -21,6 +21,8 @@ object UserDataService {
         App.prefs.authToken = ""
         App.prefs.userEmail = ""
         App.prefs.isLoggedIn = false
+        MessageService.clearMessages()
+        MessageService.clearChannels()
     }
 
     fun returnAvatarColor(components: String) : Int {
